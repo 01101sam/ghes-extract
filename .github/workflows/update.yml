@@ -36,6 +36,7 @@ jobs:
           sudo apt autoclean
           echo "::endgroup::"
           cd tools
+          chmod +x extract.sh
           ./extract.sh ${{ github.event.inputs.version }}
           mv github-v${{ github.event.inputs.version }} ../github
       - name: Commit Changes

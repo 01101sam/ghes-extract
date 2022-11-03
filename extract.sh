@@ -9,7 +9,7 @@ if ! curl -o ghes.sh -vL "https://github-enterprise.s3.amazonaws.com/hyperv/upda
   exit 1
 fi
 
-sudo chmod -R 777 ghes.sh
+sudo chmod +x ghes.sh
 
 echo "::endgroup::"
 
@@ -27,7 +27,7 @@ if [[ $result -ne 0 ]]; then
   exit 1
 fi
 rm rootfs.payload
-sudo chmod -R 777 data
+sudo chmod -R 666 data
 
 echo "::endgroup::"
 
