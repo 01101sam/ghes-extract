@@ -1,0 +1,48 @@
+name: Update Source Code
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'GHES Version'
+        required: true
+        type: string
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Tool Repo
+        uses: actions/checkout@v3
+        with:
+          path: tools
+      - name: Checkout Source Repo
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ secrets.REPO_PATH }}
+          token: ${{ secrets.PAT_TOKEN }}
+          path: github
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+      - name: Fetch Code
+        run: |
+          echo "::group::Update apt"
+          sudo apt update
+          sudo apt upgrade -y
+          sudo apt install curl ruby -y
+          sudo apt autoremove -y
+          sudo apt autoclean
+          echo "::endgroup::"
+          cd tools
+          ./extract.sh ${{ github.event.inputs.version }}
+          mv github-v${{ github.event.inputs.version }} ../github
+      - name: Commit Changes
+        run: |
+          cd ../github
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add github-v${{ github.event.inputs.version }}
+          git commit -a v${{ github.event.inputs.version }} -m "Update to GitHub Enterprise Server v${{ github.event.inputs.version }}"
+          git push origin v${{ github.event.inputs.version }}
