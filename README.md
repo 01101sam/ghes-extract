@@ -1,7 +1,9 @@
 # GitHub Enterprise Source Code Extractor
 
 > **Warning**
+> \
 > DO NOT USE THIS CODE[^1] FOR ANYTHING OTHER THAN EDUCATIONAL OR ANALYSE PURPOSES.
+> \
 > I AM NOT RESPONSIBLE FOR ANYTHING YOU DO WITH THIS CODE.
 
 This is a tool to extract source code from GitHub Enterprise.
@@ -26,10 +28,12 @@ If you want to remove this repository, please private it and email me for remova
 ### GitHub Actions
 
 > ***Note***
+> \
 > To save up GitHub Actions resources, please change `Settings -> Actions General -> Artifact and log retention`
 > to 7 days.
 
 `REPO_PATH`: Your full repository path to commit source code (e.g. `octocat/ghes-source`)
+\
 `PAT_TOKEN`: Your (Fine-grained) personal access token with (target) `repo` scope
 
 Enter your target `GHES Version` then click `Run workflow` button.
@@ -46,7 +50,4 @@ Thus, `decrypt_github_enterprise.rb` is excluded from this license.
 
 - [decrypt_github_enterprise.rb](https://gist.github.com/wchen-r7/003bef511074b8bc8432e82bfbe0dd42)
 
-[^1]: `THIS CODE` includes:
-
-- This repository
-- GitHub Enterprise Source Code
+[^1]: `THIS CODE` includes: This repository & GitHub Enterprise Source Code
