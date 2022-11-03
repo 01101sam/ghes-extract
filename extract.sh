@@ -15,7 +15,8 @@ echo "::endgroup::"
 
 echo "::group::Extract rootfs"
 
-echo "RELEASE_VERSION=\"$VERSION\"" >/etc/github/enterprise-release
+sudo mkdir /etc/github
+echo "RELEASE_VERSION=\"$VERSION\"" > /etc/github/enterprise-release
 if ! SKIP_VERSION_CHECK=1 GHE_UPGRADE=1 ./ghes.sh -x; then
   echo "::error title=Execute Failed::Failed to execute update script"
   exit 1
