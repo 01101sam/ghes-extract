@@ -1,12 +1,17 @@
-name: Update Source Code
+name: Extract Source Code
+run-name: Update Source Code to ${{ github.event.inputs.version }}
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'GHES Version'
+        description: 'Version (e.g. 3.0.0)'
         required: true
         type: string
+
+concurrency:
+  group: update
+  cancel-in-progress: false
 
 jobs:
   update:
@@ -26,24 +31,27 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
-      - name: Fetch Code
+      - name: Fetch & Extract Code
         run: |
           echo "::group::Update apt"
           sudo apt update
-          sudo apt upgrade -y
-          sudo apt install curl ruby -y
+          sudo apt install curl -y
           sudo apt autoremove -y
           sudo apt autoclean
           echo "::endgroup::"
           cd tools
           chmod +x extract.sh
-          ./extract.sh ${{ github.event.inputs.version }}
-          mv github-v${{ github.event.inputs.version }} ../github
+          sudo ./extract.sh ${{ github.event.inputs.version }}
       - name: Commit Changes
         run: |
-          cd ../github
-          git config user.name github-actions
+          cd github
+          sudo rm -rf ./*
+          sudo mv ../tools/github-v${{ github.event.inputs.version }}/* .
+          sudo chmod -R 777 .
+          git config user.name actions
           git config user.email github-actions@github.com
-          git add github-v${{ github.event.inputs.version }}
-          git commit -a v${{ github.event.inputs.version }} -m "Update to GitHub Enterprise Server v${{ github.event.inputs.version }}"
+          git add .
+          git commit -m "GitHub Enterprise Server v${{ github.event.inputs.version }}"
+          git tag -a v${{ github.event.inputs.version }} -m "GitHub Enterprise Server v${{ github.event.inputs.version }}"
+          git push origin master
           git push origin v${{ github.event.inputs.version }}
